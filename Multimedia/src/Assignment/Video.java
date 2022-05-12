@@ -8,12 +8,11 @@ public class Video
 	private String resolution;
 	private String format;
 	
-
-	public String getName() 
+	//contructors
+	public Video()
 	{
-		return name;
+		
 	}
-
 	public Video(String name,String resolution,String format) 
 	{
 		this.name = name;
@@ -21,28 +20,31 @@ public class Video
 		this.format = format;
 	}
 	
-	public ArrayList<Video> getMissingVideos (String[] format_list, String[] resolution_list,int resolution_loc)
+	
+	public Video copy()
 	{
-		ArrayList<Video> missingVideos = new ArrayList<Video>();
-		for (int j=0; j<format_list.length; j++)
-		{
-			for (int i=resolution_loc; i<resolution_list.length; i++)
-			{
-				if(format_list[j].equals(format) && resolution_list[i].equals(resolution))
-				{
-					continue;
-				}
-				else
-				{
-					Video video = new Video(name,format_list[j],resolution_list[i]);
-					missingVideos.add(video);
-				}
-			}
-		}
-		return missingVideos;
+		return this;
 	}
 	
-	public ArrayList<Video> searchByName ( ArrayList<Video> listofvideos)
+	//getters
+	public String getName() 
+	{
+		return name;
+	}
+	
+	public String getResolution() 
+	{
+		return resolution;
+	}
+	
+	
+	public String getFormat() 
+	{
+		return format;
+	}
+
+	//methods
+	public ArrayList<Video> SearchByName ( ArrayList<Video> listofvideos)
 	{
 		ArrayList<Video> items_found = new ArrayList<Video>();
 		for(Video video: listofvideos)
@@ -55,7 +57,19 @@ public class Video
 		return items_found;
 	}
 	
-	public boolean checkIfNamefexists ( ArrayList<Video> listofvideos)
+	public boolean isEqual (Video video)
+	{
+		boolean valuation = false;
+		System.out.println(name.equals(video.getResolution()) && format.equals(video.getFormat()) && resolution.equals(video.getResolution()));
+		if(name.equals(video.getResolution()) && format.equals(video.getFormat()) && resolution.equals(video.getResolution()))
+		{
+			System.out.println("why");
+			valuation = true;
+		}
+		return valuation;
+	}
+	
+	public boolean CheckIfNamefexists ( ArrayList<Video> listofvideos)
 	{
 		boolean itExists = false;
 		for(Video video: listofvideos)
@@ -84,13 +98,9 @@ public class Video
 	}
 	
 	
-	public void showVideoDetails ()
+	public String showVideoDetails ()
 	{
-		System.out.println(name + " " + resolution + " " + format);
-	}
-
-	public String getResolution() 
-	{
-		return resolution;
+		String details = name + " " + resolution + " " + format;
+		return details;
 	}
 }

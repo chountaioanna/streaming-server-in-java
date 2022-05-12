@@ -9,6 +9,11 @@ public class Video
 	private String format;
 	
 
+	public String getName() 
+	{
+		return name;
+	}
+
 	public Video(String name,String resolution,String format) 
 	{
 		this.name = name;
@@ -50,17 +55,20 @@ public class Video
 		return items_found;
 	}
 	
-	public ArrayList<Video> deleteVideo (ArrayList<Video> list)
+	public boolean checkIfNamefexists ( ArrayList<Video> listofvideos)
 	{
-		for (Video video: list)
+		boolean itExists = false;
+		for(Video video: listofvideos)
 		{
-			if( this.name.equals(video.name) && this.format.equals(video.format) && this.resolution.equals(video.resolution))
+			if(this.name.equals(video.name))
 			{
-				list.remove(video);
+				itExists = true;
+				break;
 			}
 		}
-		return list;
+		return itExists;
 	}
+	
 	
 	public boolean hasBetterResolution (String other_resolution)
 	{

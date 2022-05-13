@@ -15,7 +15,7 @@ public class TestFFMpeg {
 	
 	public static void main(String[] args) {
 		
-		String inputDir = System.getProperty("user.dir") + "/input/";
+		String inputDir = System.getProperty("user.dir") + "/videos/";
 		String outDir = System.getProperty("user.dir") + "/output/";
 		FFmpeg ffmpeg = null;
 		FFprobe ffprobe = null;
@@ -30,8 +30,8 @@ public class TestFFMpeg {
 
 		log.debug("Creating the transcoding");
 		FFmpegBuilder builder = new FFmpegBuilder()
-				.setInput(inputDir + "input_bach01.wav")
-				.addOutput(outDir + "output_bach01.mp3")
+				.setInput(inputDir + "Earth-360p.avi")
+				.addOutput(outDir + "Earth-360p.mp4")
 				.done();
 		
 		log.debug("Creating the executor");

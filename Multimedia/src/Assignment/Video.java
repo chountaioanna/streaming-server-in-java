@@ -13,13 +13,13 @@ public class Video
 	{
 		
 	}
+	
 	public Video(String name,String resolution,String format) 
 	{
 		this.name = name;
 		this.resolution = resolution;
 		this.format = format;
 	}
-	
 	
 	public Video copy()
 	{
@@ -60,10 +60,10 @@ public class Video
 	public boolean isEqual (Video video)
 	{
 		boolean valuation = false;
-		System.out.println(name.equals(video.getResolution()) && format.equals(video.getFormat()) && resolution.equals(video.getResolution()));
+//		System.out.println(name.equals(video.getResolution()) && format.equals(video.getFormat()) && resolution.equals(video.getResolution()));
 		if(name.equals(video.getResolution()) && format.equals(video.getFormat()) && resolution.equals(video.getResolution()))
 		{
-			System.out.println("why");
+//			System.out.println("why");
 			valuation = true;
 		}
 		return valuation;
@@ -83,6 +83,12 @@ public class Video
 		return itExists;
 	}
 	
+	public Integer getNumericalResolution ()
+	{
+		String object_substring = resolution.substring(0,resolution.length()-1);
+		Integer  object_num_resolution = Integer.parseInt(object_substring);
+		return object_num_resolution;
+	}
 	
 	public boolean hasBetterResolution (String other_resolution)
 	{

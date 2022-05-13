@@ -9,12 +9,25 @@ public class VideoProcessor
 	
 	private static ArrayList<Video> videosToProcess = new ArrayList<Video>();
 	private ArrayList<Video> missingVideos = new ArrayList<Video>();
+	private static ArrayList<Video> alreadyHaveVideos = new ArrayList<Video>();
 	
 	public VideoProcessor(ArrayList<Video> videos)
 	{
 		videosToProcess.addAll(videos);
 	}
 	
+	
+	public static ArrayList<Video> getAlreadyHaveVideos() 
+	{
+		return alreadyHaveVideos;
+	}
+
+
+	public ArrayList<Video> getMissingVideos() 
+	{
+		return missingVideos;
+	}
+
 	public static ArrayList<Video> getVideos() 
 	{
 		return videosToProcess;
@@ -46,12 +59,12 @@ public class VideoProcessor
 			}
 		}
 		
-		System.out.println();
-		for(Video video: missingVideos)
-		{
-			String details = video.showVideoDetails();
-			System.out.println(details);
-		}
+//		System.out.println();
+//		for(Video video: missingVideos)
+//		{
+//			String details = video.showVideoDetails();
+//			System.out.println(details);
+//		}
 	}
 	
 	public void deleteNonNeededVideos(ArrayList<Video> alreadyHaveVideos,ArrayList<Video> missingVideos)
@@ -62,7 +75,7 @@ public class VideoProcessor
 			{
 				if (item.isEqual(video))
 				{
-					System.out.println("Ma einai IDIOOOOOOOOOOOOOOOOOOOOOOOOOO");
+//					System.out.println("Ma einai IDIOOOOOOOOOOOOOOOOOOOOOOOOOO");
 					missingVideos.remove(item);
 				}
 			}

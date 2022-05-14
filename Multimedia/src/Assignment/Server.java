@@ -16,11 +16,10 @@ public class Server
 		processor.createMissingVideosList();
 		ArrayList<Video> missingVideos = new ArrayList<Video>();
 		missingVideos = processor.getMissingVideos();
-		ArrayList<Video> refresh = new ArrayList<Video>();
-		refresh = processor.getAlreadyHaveVideos();
-		refreshDirectory(DirectoryPath,refresh);
-		VideoFormatter formatter = new VideoFormatter(missingVideos);
-		
+//		ArrayList<Video> refresh = new ArrayList<Video>();
+//		refresh = processor.getAlreadyHaveVideos();
+//		refreshDirectory(DirectoryPath,refresh);
+//		VideoFormatter formatter = new VideoFormatter(missingVideos);
 	}
 	
 	public void analyzeVideos (String DirectoryPath)
@@ -38,6 +37,31 @@ public class Server
 		    }
 		}
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
 	
 	//TODO: DELETE EARTH 360P avi -> debug isEquals
 	public static void refreshDirectory(String DirectoryPath,ArrayList<Video> videoList) // already_have

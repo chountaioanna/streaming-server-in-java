@@ -60,10 +60,8 @@ public class Video
 	public boolean isEqual (Video video)
 	{
 		boolean valuation = false;
-//		System.out.println(name.equals(video.getResolution()) && format.equals(video.getFormat()) && resolution.equals(video.getResolution()));
-		if(name.equals(video.getResolution()) && format.equals(video.getFormat()) && resolution.equals(video.getResolution()))
+		if(name.equals(video.getName()) && format.equals(video.getFormat()) && resolution.equals(video.getResolution()))
 		{
-//			System.out.println("why");
 			valuation = true;
 		}
 		return valuation;

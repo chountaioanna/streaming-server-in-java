@@ -1,6 +1,7 @@
 package Assignment;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class VideoProcessor 
 {
@@ -16,12 +17,10 @@ public class VideoProcessor
 		videosToProcess.addAll(videos);
 	}
 	
-	
 	public static ArrayList<Video> getAlreadyHaveVideos() 
 	{
 		return alreadyHaveVideos;
 	}
-
 
 	public ArrayList<Video> getMissingVideos() 
 	{
@@ -35,49 +34,67 @@ public class VideoProcessor
 	
 	public void createMissingVideosList()
 	{
-		ArrayList<Video> alreadyHaveVideos = new ArrayList<Video>();
 		for(Video video: videosToProcess)
 		{
 			if (video.CheckIfNamefexists(alreadyHaveVideos))
 			{
 				continue;
 			}
-			ArrayList<Video> same_files = new ArrayList<Video>();
-			same_files = video.SearchByName(videosToProcess);
-			if (same_files.size() == 1)
-			{
-				int resolution_pointer = getResolutionPointer(video);
-				generateListForVideo(video,resolution_pointer);
-			}
 			else
 			{
-				Video BestResolutionVideo = findBestResolutionVideo(same_files);
-				int resolution_pointer = getResolutionPointer(BestResolutionVideo);
-				generateListForVideo(BestResolutionVideo,resolution_pointer);
-				alreadyHaveVideos.addAll(same_files);
-				deleteNonNeededVideos(alreadyHaveVideos,missingVideos);
+				ArrayList<Video> same_files = new ArrayList<Video>();
+				same_files = video.SearchByName(videosToProcess);
+				if (same_files.size() == 1)
+				{
+					int resolution_pointer = getResolutionPointer(video);
+					generateListForVideo(video,resolution_pointer);
+				}
+				else
+				{
+					Video BestResolutionVideo = findBestResolutionVideo(same_files);
+					int resolution_pointer = getResolutionPointer(BestResolutionVideo);
+					generateListForVideo(BestResolutionVideo,resolution_pointer);
+					addVideosFromListToOtherExceptOneVideo(same_files,alreadyHaveVideos,BestResolutionVideo);
+				}
 			}
 		}
-		
-//		System.out.println();
-//		for(Video video: missingVideos)
-//		{
-//			String details = video.showVideoDetails();
-//			System.out.println(details);
-//		}
+		deleteAlreadyHaveVideosFromMissingVideos();
 	}
 	
-	public void deleteNonNeededVideos(ArrayList<Video> alreadyHaveVideos,ArrayList<Video> missingVideos)
+	public void deleteAlreadyHaveVideosFromMissingVideos()
 	{
+		System.out.println("AlreadyHave");
 		for(Video video: alreadyHaveVideos)
 		{
-			for(Video item: missingVideos)
+			System.out.println(video.showVideoDetails());
+		}
+		System.out.println("DEBUGGING");
+		for(Video video: alreadyHaveVideos) 
+		{
+			for (Iterator<Video> i = missingVideos.iterator(); i.hasNext(); ) 
 			{
-				if (item.isEqual(video))
-				{
-//					System.out.println("Ma einai IDIOOOOOOOOOOOOOOOOOOOOOOOOOO");
-					missingVideos.remove(item);
-				}
+			    Video value=(Video)i.next();
+			    if(video.isEqual(value)) 
+			    {
+			    	System.out.println("hi");
+			        i.remove();
+			    }
+			}
+		}
+		System.out.println("MissingVideos");
+		for(Video video: missingVideos)
+		{
+			System.out.println(video.showVideoDetails());
+		}
+	}
+	
+	public void addVideosFromListToOtherExceptOneVideo(ArrayList<Video> fromlist,ArrayList<Video> tolist,Video exceptionVideo)
+	{
+		for(Video video: fromlist)
+		{
+			if(!video.isEqual(exceptionVideo))
+			{
+				tolist.add(video);
 			}
 		}
 	}

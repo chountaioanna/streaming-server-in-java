@@ -18,13 +18,14 @@ public class VideoFormatter
 {
 	static Logger log = LogManager.getLogger(TestFFMpeg.class);
 	
-	private static ArrayList<Video> videosList = new ArrayList<Video>();
-	
+	private static ArrayList<Video> missing_videos = new ArrayList<Video>();
+	private static ArrayList<Video> DirectoryVideos = new ArrayList<Video>();
 	private static Map<Integer, Integer> resolution_map = new HashMap<>();
 	
-	public VideoFormatter(ArrayList<Video> videos)
+	public VideoFormatter(ArrayList<Video> missingVideos,ArrayList<Video> Videos)
 	{
-		videosList.addAll(videos);
+		missing_videos.addAll(missingVideos);
+		DirectoryVideos.addAll(Videos);
 		resolution_map.put(1080,1920);
 		resolution_map.put(720,1280);
 		resolution_map.put(480,640);
@@ -32,39 +33,45 @@ public class VideoFormatter
 		resolution_map.put(240,426);
 	}
 	
-	//TODO: complete ffmpwgwrapper
-	
-	public void generateVideos() 
+	public Integer getValueMapper (Video video)
 	{
-		String inputDir = System.getProperty("user.dir") + "/videos/";
-		String outDir = System.getProperty("user.dir") + "/videos/";
+		Integer value;
+		Integer key;
+		key = video.getNumericalResolution();
+		value = resolution_map.get(key);
+		return value;
+	}
+	
+	public void generateVideos(String inputDir,String outDir) 
+	{
 		FFmpeg ffmpeg = null;
 		FFprobe ffprobe = null;
-		
-		try {
-			log.debug("Initialising FFMpegClient");
+		try 
+		{
 			ffmpeg = new FFmpeg("C:\\ffmpeg\\bin\\ffmpeg.exe");
 			ffprobe = new FFprobe("C:\\ffmpeg\\bin\\ffprobe.exe");
-		} catch (IOException e) {
+		} 
+		catch (IOException e) 
+		{
 			e.printStackTrace();
 		}
 		
-		for(Video video: videosList)
+		//TODO: MAKE IT WORK FOR 1 VIDEO
+		Video video = new Video("Big_Rabbit","480p","mkv");
+		ArrayList<Video> temp = new ArrayList<Video>();
+		temp = video.SearchByName(missing_videos);
+		for(Video item: temp)
 		{
-			log.debug("Creating the transcoding");
+			//System.out.println(item.showVideoDetails());
 			FFmpegBuilder builder = new FFmpegBuilder()
-					.setInput(inputDir + "Earth-360p.avi")
+					.setInput(inputDir + video.getName() + "-" + video.getResolution() + "." + video.getFormat())
 					.overrideOutputFiles(true)
-					.addOutput(outDir + "Earth-360p")
-					.setFormat("mp4")
-					.setVideoResolution(640, 480)
+					.addOutput(outDir + item.getName() + "-" + item.getFormat() + "." + item.getResolution())
+					.setVideoResolution(getValueMapper(item), item.getNumericalResolution())
 					.done();
-			
-			log.debug("Creating the executor");
 			FFmpegExecutor executor = new FFmpegExecutor(ffmpeg, ffprobe);
-			log.debug("Starting the transcoding");
 			executor.createJob(builder).run();
-			log.debug("Transcoding finished for video: " + video.getName());
+			log.debug("Transcoding finished for video:" + item.getName() + "-" + item.getFormat() + "." + item.getResolution());
 		}
 	}
 }

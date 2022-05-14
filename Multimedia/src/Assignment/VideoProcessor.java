@@ -8,15 +8,20 @@ public class VideoProcessor
 	private String[] resolution = {"1080p","720p","480p","360p","240p"};
 	
 	private static ArrayList<Video> videosToProcess = new ArrayList<Video>();
+	private static ArrayList<Video> alreadyHaveVideos = new ArrayList<Video>();
 	
 	public VideoProcessor(ArrayList<Video> videos)
 	{
 		videosToProcess.addAll(videos);
 	}
 	
+	public static ArrayList<Video> getAlreadyHaveVideos() 
+	{
+		return alreadyHaveVideos;
+	}
+
 	public ArrayList<Video> createMissingVideosList()
 	{
-		ArrayList<Video> alreadyHaveVideos = new ArrayList<Video>();
 		ArrayList<Video> missingVideoList = new ArrayList<Video>();
 		for(Video video: videosToProcess)
 		{

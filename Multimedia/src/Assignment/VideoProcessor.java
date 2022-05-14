@@ -1,7 +1,6 @@
 package Assignment;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class VideoProcessor 
 {
@@ -9,31 +8,16 @@ public class VideoProcessor
 	private String[] resolution = {"1080p","720p","480p","360p","240p"};
 	
 	private static ArrayList<Video> videosToProcess = new ArrayList<Video>();
-	private ArrayList<Video> missingVideos = new ArrayList<Video>();
-	private static ArrayList<Video> alreadyHaveVideos = new ArrayList<Video>();
 	
 	public VideoProcessor(ArrayList<Video> videos)
 	{
 		videosToProcess.addAll(videos);
 	}
 	
-	public static ArrayList<Video> getAlreadyHaveVideos() 
+	public ArrayList<Video> createMissingVideosList()
 	{
-		return alreadyHaveVideos;
-	}
-
-	public ArrayList<Video> getMissingVideos() 
-	{
-		return missingVideos;
-	}
-
-	public static ArrayList<Video> getVideos() 
-	{
-		return videosToProcess;
-	}
-	
-	public void createMissingVideosList()
-	{
+		ArrayList<Video> alreadyHaveVideos = new ArrayList<Video>();
+		ArrayList<Video> missingVideoList = new ArrayList<Video>();
 		for(Video video: videosToProcess)
 		{
 			if (video.CheckIfNamefexists(alreadyHaveVideos))
@@ -47,57 +31,74 @@ public class VideoProcessor
 				if (same_files.size() == 1)
 				{
 					int resolution_pointer = getResolutionPointer(video);
-					generateListForVideo(video,resolution_pointer);
+					missingVideoList.addAll(generateListForVideo(video,resolution_pointer,alreadyHaveVideos));
 				}
 				else
 				{
 					Video BestResolutionVideo = findBestResolutionVideo(same_files);
 					int resolution_pointer = getResolutionPointer(BestResolutionVideo);
-					generateListForVideo(BestResolutionVideo,resolution_pointer);
+					missingVideoList.addAll(generateListForVideo(BestResolutionVideo,resolution_pointer,alreadyHaveVideos));
 					addVideosFromListToOtherExceptOneVideo(same_files,alreadyHaveVideos,BestResolutionVideo);
 				}
 			}
 		}
-		deleteAlreadyHaveVideosFromMissingVideos();
+		return missingVideoList;
 	}
 	
-	public void deleteAlreadyHaveVideosFromMissingVideos()
+	public int getResolutionPointer(Video video)
 	{
-		System.out.println("AlreadyHave");
-		for(Video video: alreadyHaveVideos)
+		int return_value=-1;
+		String resolution_value = video.getResolution();
+		for(int i=0; i<resolution.length; i++)
 		{
-			System.out.println(video.showVideoDetails());
-		}
-		System.out.println("DEBUGGING");
-		for(Video video: alreadyHaveVideos) 
-		{
-			for (Iterator<Video> i = missingVideos.iterator(); i.hasNext(); ) 
+			if(resolution_value.equals(resolution[i]))
 			{
-			    Video value=(Video)i.next();
-			    if(video.isEqual(value)) 
-			    {
-			    	System.out.println("hi");
-			        i.remove();
-			    }
+				return_value = i;
 			}
 		}
-		System.out.println("MissingVideos");
-		for(Video video: missingVideos)
-		{
-			System.out.println(video.showVideoDetails());
-		}
+		return return_value;
 	}
 	
-	public void addVideosFromListToOtherExceptOneVideo(ArrayList<Video> fromlist,ArrayList<Video> tolist,Video exceptionVideo)
+	public ArrayList<Video> generateListForVideo(Video video,int resolution_pointer,ArrayList<Video> alreadyHave)
 	{
-		for(Video video: fromlist)
+		ArrayList<Video> temp = new ArrayList<Video>();
+		for (int j=0; j<format.length; j++)
 		{
-			if(!video.isEqual(exceptionVideo))
+			for (int i=resolution_pointer; i<resolution.length; i++)
 			{
-				tolist.add(video);
+				if(format[j].equals(video.getFormat()) && resolution[i].equals(video.getResolution()))
+				{
+					continue;
+				}
+				else if (checkIfExistsInList(alreadyHave,video.getName(),format[j],resolution[i]))
+				{
+					continue;
+				}
+				else
+				{
+					Video missingVideo = new Video(video.getName(),format[j],resolution[i]);
+					temp.add(missingVideo);
+				}
 			}
 		}
+		return temp;
 	}
+	
+	public boolean checkIfExistsInList(ArrayList<Video> alreadyHave,String name,String format,String resolution)
+	{
+		Video helper = new Video(name,resolution,format);
+		boolean value = false;
+		for(Video video: alreadyHave)
+		{
+			if(helper.isEqual(video))
+			{
+				value = true;
+				break;
+			}
+		}
+		return value;
+	}
+	
 	
 	public Video findBestResolutionVideo(ArrayList<Video> same_files)
 	{
@@ -115,35 +116,13 @@ public class VideoProcessor
 		return found_video;
 	}
 	
-	public int getResolutionPointer(Video video)
+	public void addVideosFromListToOtherExceptOneVideo(ArrayList<Video> fromlist,ArrayList<Video> tolist,Video exceptionVideo)
 	{
-		int return_value=-1;
-		String resolution_value = video.getResolution();
-		for(int i=0; i<resolution.length; i++)
+		for(Video video: fromlist)
 		{
-			if(resolution_value.equals(resolution[i]))
+			if(!video.isEqual(exceptionVideo))
 			{
-				return_value = i;
-			}
-		}
-		return return_value;
-	}
-	
-	public void generateListForVideo(Video video,int resolution_pointer)
-	{
-		for (int j=0; j<format.length; j++)
-		{
-			for (int i=resolution_pointer; i<resolution.length; i++)
-			{
-				if(format[j].equals(video.getFormat()) && resolution[i].equals(video.getResolution()))
-				{
-					continue;
-				}
-				else
-				{
-					Video missingVideo = new Video(video.getName(),format[j],resolution[i]);
-					missingVideos.add(missingVideo);
-				}
+				tolist.add(video);
 			}
 		}
 	}

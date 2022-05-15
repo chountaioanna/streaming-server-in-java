@@ -102,9 +102,8 @@ public class Video
 	}
 	
 	
-	public String showVideoDetails ()
+	public void showAll ()
 	{
-		String details = name + " " + resolution + " " + format;
-		return details;
+		System.out.println( "Name: " + name + " Resolution: " + resolution + " Format: " + format);
 	}
 }

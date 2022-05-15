@@ -6,22 +6,20 @@ import java.util.ArrayList;
 public class Server 
 {
 	private static String InputPath = System.getProperty("user.dir") + "/videos/";
-	private static String OutputPath = System.getProperty("user.dir") + "/StreamingFolder/";
+	private static String OutputPath = System.getProperty("user.dir") + "/videos/";
 	
-	private static ArrayList<Video> directory_videos = new ArrayList<Video>();
-	
+	private static ArrayList<Video> videos = new ArrayList<Video>();
 	
 	public static void main(String args[]) 
 	{
 		Server server = new Server();
-		server.analyzeVideos(InputPath); //turn videos in objects
-		VideoProcessor processor = new VideoProcessor(directory_videos);
-		ArrayList<Video> missingVideos = new ArrayList<Video>();
-		missingVideos = processor.createMissingVideosList();
+		server.analyzeVideos(InputPath);
+		VideoProcessor processor = new VideoProcessor(videos);
+		processor.createMissingVideosList(InputPath);
 		ArrayList<Video> alreadyHaveVideos = new ArrayList<Video>();
 		alreadyHaveVideos = VideoProcessor.getAlreadyHaveVideos();
 		Server.refreshDirectory(InputPath, alreadyHaveVideos);
-		VideoFormatter formatter = new VideoFormatter(missingVideos,directory_videos);
+		VideoFormatter formatter = new VideoFormatter(videos);
 		formatter.generateVideos(InputPath,OutputPath);
 	}
 	
@@ -36,7 +34,7 @@ public class Server
 		    	String[] child_details;
 		    	child_details = child.getName().split("-|\\.");
 		    	Video video = new Video(child_details[0],child_details[1],child_details[2]);
-		    	directory_videos.add(video);	
+		    	videos.add(video);	
 		    }
 		}
 	}

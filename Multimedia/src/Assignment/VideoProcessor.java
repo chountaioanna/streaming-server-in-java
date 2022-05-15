@@ -1,5 +1,7 @@
 package Assignment;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class VideoProcessor 
@@ -15,12 +17,13 @@ public class VideoProcessor
 		videosToProcess.addAll(videos);
 	}
 	
+	
 	public static ArrayList<Video> getAlreadyHaveVideos() 
 	{
 		return alreadyHaveVideos;
 	}
-
-	public ArrayList<Video> createMissingVideosList()
+	
+	public void createMissingVideosList(String inputDir)
 	{
 		ArrayList<Video> missingVideoList = new ArrayList<Video>();
 		for(Video video: videosToProcess)
@@ -47,10 +50,31 @@ public class VideoProcessor
 				}
 			}
 		}
-		return missingVideoList;
+		writeListToFile("MissingVideos.txt",missingVideoList);
+		
 	}
 	
-	public int getResolutionPointer(Video video)
+	public void writeListToFile(String path,ArrayList<Video> videos)
+	{
+		try 
+		{
+		      FileWriter myWriter = new FileWriter(path);
+		      for(Video video: videos)
+		      {
+		    	  myWriter.write(video.getName() + " " + video.getResolution() + " " + video.getFormat() + "\n");
+			      
+		      }
+		      myWriter.close();
+		      System.out.println("Successfully wrote to the file.");
+		 } 
+		catch (IOException e) 
+		{
+		      System.out.println("An error occurred.");
+		      e.printStackTrace();
+		}
+	}
+
+	private int getResolutionPointer(Video video)
 	{
 		int return_value=-1;
 		String resolution_value = video.getResolution();
@@ -64,7 +88,7 @@ public class VideoProcessor
 		return return_value;
 	}
 	
-	public ArrayList<Video> generateListForVideo(Video video,int resolution_pointer,ArrayList<Video> alreadyHave)
+	private ArrayList<Video> generateListForVideo(Video video,int resolution_pointer,ArrayList<Video> alreadyHave)
 	{
 		ArrayList<Video> temp = new ArrayList<Video>();
 		for (int j=0; j<format.length; j++)
@@ -89,7 +113,7 @@ public class VideoProcessor
 		return temp;
 	}
 	
-	public boolean checkIfExistsInList(ArrayList<Video> alreadyHave,String name,String format,String resolution)
+	private boolean checkIfExistsInList(ArrayList<Video> alreadyHave,String name,String format,String resolution)
 	{
 		Video helper = new Video(name,resolution,format);
 		boolean value = false;
@@ -105,7 +129,7 @@ public class VideoProcessor
 	}
 	
 	
-	public Video findBestResolutionVideo(ArrayList<Video> same_files)
+	private Video findBestResolutionVideo(ArrayList<Video> same_files)
 	{
 		Video found_video = same_files.get(0).copy();
 		String max_resolution = same_files.get(0).getResolution();
@@ -121,7 +145,7 @@ public class VideoProcessor
 		return found_video;
 	}
 	
-	public void addVideosFromListToOtherExceptOneVideo(ArrayList<Video> fromlist,ArrayList<Video> tolist,Video exceptionVideo)
+	private void addVideosFromListToOtherExceptOneVideo(ArrayList<Video> fromlist,ArrayList<Video> tolist,Video exceptionVideo)
 	{
 		for(Video video: fromlist)
 		{

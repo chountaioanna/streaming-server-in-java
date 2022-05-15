@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class Server 
 {
 	private static String InputPath = System.getProperty("user.dir") + "/videos/";
-	private static String OutputPath = System.getProperty("user.dir") + "/videos/";
+	private static String OutputPath = System.getProperty("user.dir") + "/output/";
 	
 	private static ArrayList<Video> videos = new ArrayList<Video>();
 	

@@ -55,7 +55,7 @@ public class VideoFormatter
 				MissingVideos.add(video);	
 			}
 			myReader.close();
-			System.out.println("Successfully read from the file.");
+			System.out.println("Successfully read the file.");
 	    } 
 		catch (FileNotFoundException e) 
 		{
@@ -101,7 +101,9 @@ public class VideoFormatter
 		    	Video video = new Video(details[0],details[1],details[2]);
 		    	if(video.CheckIfNamefexists(MissingVideos))
 		    	{
-		    		for(Video toBeCreated: MissingVideos)
+		    		ArrayList<Video> temp = new ArrayList<Video>();
+		    		temp.addAll(video.SearchByName(MissingVideos));
+		    		for(Video toBeCreated: temp)
 			    	{
 		    			if(toBeCreated.getName().equals(toBeCreated.getName()))
 		    			{
@@ -126,13 +128,14 @@ public class VideoFormatter
 			    					// Run a one-pass encode
 			    					executor.createJob(builder).run();
 
-			    					// Or run a two-pass encode (which is better quality at the cost of being slower)
-			    					executor.createTwoPassJob(builder).run();
 			    					log.debug("Transcoding finished");
 		    			}
 			    	}
 		    	}
 		    }
 		}
+		File myObj = new File("MissingVideos.txt");
+		myObj.delete();
+		System.out.println("Successfully deleted the file.");
 	}
 }

@@ -22,7 +22,6 @@ public class Server
 	private static String OutputPath = System.getProperty("user.dir") + "/output/";
 	
 	private static ArrayList<Video> videos = new ArrayList<Video>();
-	private static ArrayList<Video> streamingVideos = new ArrayList<Video>();
 	
 	private static ServerSocket server;
 	private static int port = 5000;
@@ -33,14 +32,14 @@ public class Server
 	{
 		Server server = new Server();
 		server.analyzeVideos(InputPath);
-//		VideoProcessor processor = new VideoProcessor(videos,format,resolution);
-//		processor.createMissingVideosList(InputPath);
-//		ArrayList<Video> alreadyHaveVideos = new ArrayList<Video>();
-//		alreadyHaveVideos = VideoProcessor.getAlreadyHaveVideos();
-//		Server.refreshDirectory(InputPath, alreadyHaveVideos);
-//		VideoFormatter formatter = new VideoFormatter(videos);
-//		formatter.generateVideos(InputPath,OutputPath);
-//		server.moveFiles();
+		VideoProcessor processor = new VideoProcessor(videos,format,resolution);
+		processor.createMissingVideosList(InputPath);
+		ArrayList<Video> alreadyHaveVideos = new ArrayList<Video>();
+		alreadyHaveVideos = VideoProcessor.getAlreadyHaveVideos();
+		Server.refreshDirectory(InputPath, alreadyHaveVideos);
+		VideoFormatter formatter = new VideoFormatter(videos);
+		formatter.generateVideos(InputPath,OutputPath);
+		server.moveFiles();
 		try 
 		{
 			server.startServer();
@@ -82,16 +81,19 @@ public class Server
 			// server receives the download speed of client and the desired format 
 			in = new ObjectInputStream(socket.getInputStream());
 			String msgReceived = (String) in.readObject();
+			System.out.println(msgReceived);
 			String[] msgParts = msgReceived.split("#"); 
 			double SpeedClient = Double.parseDouble(msgParts[1]);
 			String FormatClient = msgParts[2];
-			// server sends the list of available videos according to download speed and the chosen format
+//			// server sends the list of available videos according to download speed and the chosen format
 			String msgReply = getStreamingVideos(SpeedClient,FormatClient);
+			System.out.println(msgReply);
+			out = new ObjectOutputStream(socket.getOutputStream());
 			out.writeObject(msgReply);
 			out.close();
 			in.close();
 			socket.close();
-			if (msgReply.equals("EXIT"))
+			if (msgReceived.equals("EXIT"))
 			{
 				break;
 			}
@@ -103,16 +105,6 @@ public class Server
 	public String getStreamingVideos(double SpeedClient,String FormatClient)
 	{
 		String listofvideos = "";
-		for(Video video: streamingVideos)
-		{
-			if(video.getFormat().equals(FormatClient))
-			{
-				if( getValueMapper(video) < SpeedClient )
-				{
-					listofvideos= "#" + video.getName() + "-" + video.getResolution();
-				}
-			}
-		}
 		File dir = new File(OutputPath);
 		File[] directoryListing = dir.listFiles();
 		if (directoryListing != null) 

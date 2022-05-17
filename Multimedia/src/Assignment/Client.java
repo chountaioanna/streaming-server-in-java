@@ -26,9 +26,8 @@ public class Client
 		ObjectOutputStream out = null;
 		ObjectInputStream in = null;
 		Scanner sc = new Scanner(System.in);
-		while (true) 
-		{
-			socket = new Socket("127.0.0.1", 5000);
+		socket = new Socket("127.0.0.1", 5000);
+		
 			// Client receives list of available formats
 			in = new ObjectInputStream(socket.getInputStream());
 			String msgReceived = (String) in.readObject();
@@ -38,41 +37,39 @@ public class Client
 			{
 				System.out.println( i + ". " + msgParts[i]);
 			}
-			// Client chooses format and sends it to server
-			out = new ObjectOutputStream(socket.getOutputStream());
-			String msgReply = "";
-			//System.out.println("1.mkv\n2.avi\n3.mp4");
-			int s = sc.nextInt();
-			switch (s) 
-			{
-				case 1:
-					msgReply = help + "#" + "mkv";
-					break;
-				case 2:
-					msgReply = help + "#" + "avi";
-					break;
-				case 3:
-					msgReply = help + "#" + "mp4";
-					break;
-				default:
-					break;
-			}
-			out.writeObject(msgReply);
 			
-			
+		// Client chooses format and sends it to server
+		out = new ObjectOutputStream(socket.getOutputStream());
+		String msgReply = "";
+		int s = sc.nextInt();
+		switch (s) 
+		{
+			case 1:
+				msgReply = "#" + help + "#" + "avi";
+				break;
+			case 2:
+				msgReply = "#" + help + "#" + "mp4";
+				break;
+			case 3:
+				msgReply = "#" + help + "#" + "mkv";
+				break;
+			default:
+				break;
+		}
+		out.writeObject(msgReply);
+		
 			// Client receives list of available videos (#name-resolution)
 			in = new ObjectInputStream(socket.getInputStream());
 			String listReceived = (String) in.readObject();
 			System.out.println("Message Received: " + listReceived);
-//			String[] msgParts = msgReceived.split("#"); 
-//			for(int i=1; i<msgParts.length; i++)
-//			{
-//				System.out.println( i + ". " + msgParts[i]);
-//			}
-			in.close();
-			out.close();
-			socket.close();
-		}
+			String[] listReceivedParts = listReceived.split("#"); 
+			for(int i=1; i<listReceivedParts.length; i++)
+			{
+				System.out.println( i + ". " + listReceivedParts[i]);
+			}
+		in.close();
+		out.close();
+		socket.close();
     }
     
     public void runSpeedTest()

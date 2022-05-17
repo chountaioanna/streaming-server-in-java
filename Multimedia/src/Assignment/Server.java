@@ -8,10 +8,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 public class Server 
 {
@@ -40,6 +37,7 @@ public class Server
 		VideoFormatter formatter = new VideoFormatter(videos);
 		formatter.generateVideos(InputPath,OutputPath);
 		server.moveFiles();
+		
 		try 
 		{
 			server.startServer();
@@ -75,21 +73,30 @@ public class Server
 		{
 			System.out.println("Listening for client requests...");
 			Socket socket = server.accept();
+			
 			// server sends client the list with the available formats
 			out = new ObjectOutputStream(socket.getOutputStream());
 			out.writeObject(list);
-			// server receives the download speed of client and the desired format 
-			in = new ObjectInputStream(socket.getInputStream());
-			String msgReceived = (String) in.readObject();
-			System.out.println(msgReceived);
-			String[] msgParts = msgReceived.split("#"); 
-			double SpeedClient = Double.parseDouble(msgParts[1]);
-			String FormatClient = msgParts[2];
+			
+				// server receives the download speed of client and the desired format 
+				in = new ObjectInputStream(socket.getInputStream());
+				String msgReceived = (String) in.readObject();
+				System.out.println(msgReceived);
+				String[] msgParts = msgReceived.split("#"); 
+				double SpeedClient = Double.parseDouble(msgParts[1]);
+				String FormatClient = msgParts[2];
+				
 //			// server sends the list of available videos according to download speed and the chosen format
 			String msgReply = getStreamingVideos(SpeedClient,FormatClient);
 			System.out.println(msgReply);
 			out = new ObjectOutputStream(socket.getOutputStream());
 			out.writeObject(msgReply);
+			
+				// server receives client choice
+				in = new ObjectInputStream(socket.getInputStream());
+				String moviechoice = (String) in.readObject();
+				System.out.println(moviechoice);
+				
 			out.close();
 			in.close();
 			socket.close();

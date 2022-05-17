@@ -18,22 +18,29 @@ import lab.LogUtils;
 
 public class Client 
 { 
+	private static Socket socket = null;
+	private static String ip = "127.0.0.1";
+	private static int port = 5000;
+	private static double dspeed = 2.1;
+	
+	ObjectOutputStream out = null;
+	ObjectInputStream in = null;
 	
     public static void main(String[] args) throws UnknownHostException, IOException, ClassNotFoundException, InterruptedException 
     {
-    	double help = 2.1;
-    	Socket socket = null;
-		ObjectOutputStream out = null;
-		ObjectInputStream in = null;
+    	double dspeed = 2.1;
+    	ObjectOutputStream out = null;
+    	ObjectInputStream in = null;
 		Scanner sc = new Scanner(System.in);
-		socket = new Socket("127.0.0.1", 5000);
+		socket = new Socket(ip, port);
 		
 			// Client receives list of available formats
 			in = new ObjectInputStream(socket.getInputStream());
 			String msgReceived = (String) in.readObject();
 			System.out.println("Message Received: " + msgReceived);
 			String[] msgParts = msgReceived.split("#"); 
-			for(int i=1; i<msgParts.length; i++)
+			int i = 1;
+			for(i=1; i<msgParts.length; i++)
 			{
 				System.out.println( i + ". " + msgParts[i]);
 			}
@@ -42,19 +49,9 @@ public class Client
 		out = new ObjectOutputStream(socket.getOutputStream());
 		String msgReply = "";
 		int s = sc.nextInt();
-		switch (s) 
+		if( s < i)
 		{
-			case 1:
-				msgReply = "#" + help + "#" + "avi";
-				break;
-			case 2:
-				msgReply = "#" + help + "#" + "mp4";
-				break;
-			case 3:
-				msgReply = "#" + help + "#" + "mkv";
-				break;
-			default:
-				break;
+			msgReply = "#" + dspeed + "#" + msgParts[s];
 		}
 		out.writeObject(msgReply);
 		
@@ -62,11 +59,23 @@ public class Client
 			in = new ObjectInputStream(socket.getInputStream());
 			String listReceived = (String) in.readObject();
 			System.out.println("Message Received: " + listReceived);
-			String[] listReceivedParts = listReceived.split("#"); 
-			for(int i=1; i<listReceivedParts.length; i++)
+			String[] listReceivedParts = listReceived.split("#");
+			int j = 1;
+			for(j=1; j<listReceivedParts.length; j++)
 			{
-				System.out.println( i + ". " + listReceivedParts[i]);
+				System.out.println( j + ". " + listReceivedParts[j]);
 			}
+		
+		// client sends to server the movie for streaming
+		out = new ObjectOutputStream(socket.getOutputStream());
+		String choice = "";
+		int c = sc.nextInt();
+		if( c < j )
+		{
+			choice = listReceivedParts[c];
+		}
+		out.writeObject(choice);
+		
 		in.close();
 		out.close();
 		socket.close();
@@ -84,30 +93,36 @@ public class Client
 
         //speedTestSocket.setUploadStorageType(UploadStorageType.FILE_STORAGE);
 
-        speedTestSocket.addSpeedTestListener(new ISpeedTestListener() {
+        speedTestSocket.addSpeedTestListener(new ISpeedTestListener() 
+        {
 
             @Override
-            public void onCompletion(final SpeedTestReport report) {
+            public void onCompletion(final SpeedTestReport report) 
+            {
                 //called when download/upload is complete
                 LogUtils.logFinishedTask(report.getSpeedTestMode(), report.getTotalPacketSize(),
                         report.getTransferRateBit(),
                         report.getTransferRateOctet(), LOGGER);
+                
             }
 
             @Override
-            public void onError(final SpeedTestError speedTestError, final String errorMessage) {
+            public void onError(final SpeedTestError speedTestError, final String errorMessage) 
+            {
                 if (LOGGER.isErrorEnabled()) {
                     LOGGER.error(errorMessage);
                 }
             }
 
             @Override
-            public void onProgress(final float percent, final SpeedTestReport downloadReport) {
+            public void onProgress(final float percent, final SpeedTestReport downloadReport) 
+            {
                 LogUtils.logSpeedTestReport(downloadReport, LOGGER);
             }
 
 			@Override
-			public void onInterruption() {
+			public void onInterruption() 
+			{
 				// TODO Auto-generated method stub
 				
 			}

@@ -127,7 +127,6 @@ public class VideoFormatter
 			    					log.debug("Starting the transcoding");
 			    					// Run a one-pass encode
 			    					executor.createJob(builder).run();
-
 			    					log.debug("Transcoding finished");
 		    			}
 			    	}

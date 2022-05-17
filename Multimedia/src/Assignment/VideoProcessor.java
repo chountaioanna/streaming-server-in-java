@@ -6,17 +6,18 @@ import java.util.ArrayList;
 
 public class VideoProcessor 
 {
-	private String[] format = {"avi","mp4","mkv"};
-	private String[] resolution = {"1080p","720p","480p","360p","240p"};
+	private String[] format;
+	private String[] resolution;
 	
 	private static ArrayList<Video> videosToProcess = new ArrayList<Video>();
 	private static ArrayList<Video> alreadyHaveVideos = new ArrayList<Video>();
 	
-	public VideoProcessor(ArrayList<Video> videos)
+	public VideoProcessor(ArrayList<Video> videos,String[] format,String[] resolution)
 	{
 		videosToProcess.addAll(videos);
+		this.format = format;
+		this.resolution = resolution;
 	}
-	
 	
 	public static ArrayList<Video> getAlreadyHaveVideos() 
 	{

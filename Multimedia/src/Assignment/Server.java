@@ -2,8 +2,10 @@ package Assignment;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -96,7 +98,8 @@ public class Server
 				in = new ObjectInputStream(socket.getInputStream());
 				String moviechoice = (String) in.readObject();
 				System.out.println(moviechoice);
-				
+			
+			startStreaming();
 			out.close();
 			in.close();
 			socket.close();
@@ -208,5 +211,17 @@ public class Server
 		    	child.renameTo(new File(OutputPath + "/" + child.getName()));
 		    }
 		}
+	}
+	
+	public void startStreaming () throws IOException
+	{
+		ProcessBuilder pb = new ProcessBuilder( );
+        pb.command( "C:\\Windows\\System32\\cmd.exe", "/c", 
+        "c:\\ffmpeg\\bin\\ffmpeg.exe", "-version" ); 
+        Process process = pb.start();
+        OutputStream stdOutput = process.getOutputStream();
+        System.out.println();
+        InputStream inputStream = process.getInputStream();
+        InputStream errorStream = process.getErrorStream();
 	}
 }

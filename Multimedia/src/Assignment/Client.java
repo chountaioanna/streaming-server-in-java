@@ -1,6 +1,9 @@
 package Assignment;
 
+import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
@@ -76,6 +79,19 @@ public class Client
 		}
 		out.writeObject(choice);
 		
+		ProcessBuilder processBuilder = new ProcessBuilder();
+		
+		processBuilder.command("cmd.exe","/c","ffplay udp://127.0.0.1:1234");
+
+        try
+        {
+            Process process = processBuilder.start();
+        } 
+        catch (IOException e) 
+        {
+            e.printStackTrace();
+        }
+        
 		in.close();
 		out.close();
 		socket.close();

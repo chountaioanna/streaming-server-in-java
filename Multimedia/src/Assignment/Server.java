@@ -1,8 +1,10 @@
 package Assignment;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
@@ -11,6 +13,9 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import net.bramp.ffmpeg.FFmpeg;
+import net.bramp.ffmpeg.FFprobe;
 
 public class Server 
 {
@@ -33,12 +38,12 @@ public class Server
 		server.analyzeVideos(InputPath);
 		VideoProcessor processor = new VideoProcessor(videos,format,resolution);
 		processor.createMissingVideosList(InputPath);
-		ArrayList<Video> alreadyHaveVideos = new ArrayList<Video>();
-		alreadyHaveVideos = VideoProcessor.getAlreadyHaveVideos();
-		Server.refreshDirectory(InputPath, alreadyHaveVideos);
-		VideoFormatter formatter = new VideoFormatter(videos);
-		formatter.generateVideos(InputPath,OutputPath);
-		server.moveFiles();
+//		ArrayList<Video> alreadyHaveVideos = new ArrayList<Video>();
+//		alreadyHaveVideos = VideoProcessor.getAlreadyHaveVideos();
+//		Server.refreshDirectory(InputPath, alreadyHaveVideos);
+//		VideoFormatter formatter = new VideoFormatter(videos);
+//		formatter.generateVideos(InputPath,OutputPath);
+//		server.moveFiles();
 		
 		try 
 		{
@@ -99,7 +104,21 @@ public class Server
 				String moviechoice = (String) in.readObject();
 				System.out.println(moviechoice);
 			
-			startStreaming();
+			ProcessBuilder processBuilder = new ProcessBuilder();
+			
+			processBuilder.command("cmd.exe","/c","ffmpeg -re -i Earth-480p.avi -f avi udp://127.0.0.1:1234");
+			processBuilder.directory(new File(OutputPath));
+
+	        try 
+	        {
+	            Process process = processBuilder.start();
+	        } 
+	        catch (IOException e) 
+	        {
+	            e.printStackTrace();
+	        } 
+				
+				
 			out.close();
 			in.close();
 			socket.close();
@@ -213,15 +232,5 @@ public class Server
 		}
 	}
 	
-	public void startStreaming () throws IOException
-	{
-		ProcessBuilder pb = new ProcessBuilder( );
-        pb.command( "C:\\Windows\\System32\\cmd.exe", "/c", 
-        "c:\\ffmpeg\\bin\\ffmpeg.exe", "-version" ); 
-        Process process = pb.start();
-        OutputStream stdOutput = process.getOutputStream();
-        System.out.println();
-        InputStream inputStream = process.getInputStream();
-        InputStream errorStream = process.getErrorStream();
-	}
+	
 }

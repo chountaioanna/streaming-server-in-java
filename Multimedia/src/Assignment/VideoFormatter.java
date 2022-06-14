@@ -55,7 +55,6 @@ public class VideoFormatter
 				MissingVideos.add(video);	
 			}
 			myReader.close();
-			System.out.println("Successfully read the file.");
 	    } 
 		catch (FileNotFoundException e) 
 		{
@@ -135,6 +134,5 @@ public class VideoFormatter
 		}
 		File myObj = new File("MissingVideos.txt");
 		myObj.delete();
-		System.out.println("Successfully deleted the file.");
 	}
 }

@@ -38,12 +38,12 @@ public class Server
 		server.analyzeVideos(InputPath);
 		VideoProcessor processor = new VideoProcessor(videos,format,resolution);
 		processor.createMissingVideosList(InputPath);
-//		ArrayList<Video> alreadyHaveVideos = new ArrayList<Video>();
-//		alreadyHaveVideos = VideoProcessor.getAlreadyHaveVideos();
-//		Server.refreshDirectory(InputPath, alreadyHaveVideos);
-//		VideoFormatter formatter = new VideoFormatter(videos);
-//		formatter.generateVideos(InputPath,OutputPath);
-//		server.moveFiles();
+		ArrayList<Video> alreadyHaveVideos = new ArrayList<Video>();
+		alreadyHaveVideos = VideoProcessor.getAlreadyHaveVideos();
+		Server.refreshDirectory(InputPath, alreadyHaveVideos);
+		VideoFormatter formatter = new VideoFormatter(videos);
+		formatter.generateVideos(InputPath,OutputPath);
+		server.moveFiles();
 		
 		try 
 		{
@@ -103,21 +103,36 @@ public class Server
 				in = new ObjectInputStream(socket.getInputStream());
 				String moviechoice = (String) in.readObject();
 				System.out.println(moviechoice);
+				String[] streaming_details = moviechoice.split("#");
+				//System.out.println(streaming_details[1] + " " + streaming_details[2]);
+				
+			String command = null;
+			String command_client = null;
 			
+			if (streaming_details[2].equals("UDP"))
+			{
+				command = "ffmpeg -re -i " + streaming_details[1] + " -f avi udp://127.0.0.1:1234";
+				command_client = "ffplay udp://127.0.0.1:1234";
+			}
+			
+			if (streaming_details[2].equals("TCP"))
+			{
+				command = "ffmpeg -i " + streaming_details[1] + " -f avi tcp://127.0.0.1:1234?listen";
+				command_client = "ffplay tcp://127.0.0.1:1234";
+			}
 			ProcessBuilder processBuilder = new ProcessBuilder();
-			
-			processBuilder.command("cmd.exe","/c","ffmpeg -re -i Earth-480p.avi -f avi udp://127.0.0.1:1234");
+			processBuilder.command("cmd.exe","/c",command);
 			processBuilder.directory(new File(OutputPath));
-
 	        try 
 	        {
 	            Process process = processBuilder.start();
+				out = new ObjectOutputStream(socket.getOutputStream());
+				out.writeObject(command_client);
 	        } 
 	        catch (IOException e) 
 	        {
 	            e.printStackTrace();
 	        } 
-				
 				
 			out.close();
 			in.close();

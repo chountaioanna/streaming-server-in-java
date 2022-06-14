@@ -66,7 +66,6 @@ public class VideoProcessor
 			      
 		      }
 		      myWriter.close();
-		      System.out.println("Successfully wrote to the file.");
 		 } 
 		catch (IOException e) 
 		{

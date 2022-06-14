@@ -11,7 +11,6 @@ import java.util.Scanner;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import lab.TestFFMpeg;
 import net.bramp.ffmpeg.FFmpeg;
 import net.bramp.ffmpeg.FFmpegExecutor;
 import net.bramp.ffmpeg.FFprobe;
@@ -19,7 +18,7 @@ import net.bramp.ffmpeg.builder.FFmpegBuilder;
 
 public class VideoFormatter 
 {
-	static Logger log = LogManager.getLogger(TestFFMpeg.class);
+	static Logger log = LogManager.getLogger(VideoFormatter.class);
 	
 	private static ArrayList<Video> DirectoryVideos = new ArrayList<Video>();
 	private static Map<Integer, Integer> resolution_map = new HashMap<>();

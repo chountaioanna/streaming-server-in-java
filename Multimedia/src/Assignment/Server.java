@@ -93,7 +93,7 @@ public class Server
 				double SpeedClient = Double.parseDouble(msgParts[1]);
 				String FormatClient = msgParts[2];
 				
-//			// server sends the list of available videos according to download speed and the chosen format
+			// server sends the list of available videos according to download speed and the chosen format
 			String msgReply = getStreamingVideos(SpeedClient,FormatClient);
 			System.out.println(msgReply);
 			out = new ObjectOutputStream(socket.getOutputStream());
@@ -246,6 +246,4 @@ public class Server
 		    }
 		}
 	}
-	
-	
 }

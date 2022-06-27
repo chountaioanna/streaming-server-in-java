@@ -80,7 +80,7 @@ public class Server
 		{
 			System.out.println("Listening for client requests...");
 			Socket socket = server.accept();
-			
+			System.out.println("Client has connected");
 			// server sends client the list with the available formats
 			out = new ObjectOutputStream(socket.getOutputStream());
 			out.writeObject(list);
@@ -88,23 +88,26 @@ public class Server
 				// server receives the download speed of client and the desired format 
 				in = new ObjectInputStream(socket.getInputStream());
 				String msgReceived = (String) in.readObject();
-				System.out.println(msgReceived);
+				System.out.println("Message Received " + msgReceived);
 				String[] msgParts = msgReceived.split("#"); 
 				double SpeedClient = Double.parseDouble(msgParts[1]);
 				String FormatClient = msgParts[2];
+				System.out.println("Message Description:");
+				System.out.println("Client has " + SpeedClient + " kbps download speed");
+				System.out.println("Client desires ." + FormatClient + " videos");
 				
 			// server sends the list of available videos according to download speed and the chosen format
 			String msgReply = getStreamingVideos(SpeedClient,FormatClient);
-			System.out.println(msgReply);
 			out = new ObjectOutputStream(socket.getOutputStream());
 			out.writeObject(msgReply);
 			
 				// server receives client choice
 				in = new ObjectInputStream(socket.getInputStream());
 				String moviechoice = (String) in.readObject();
-				System.out.println(moviechoice);
+				System.out.println("Message Received: " + moviechoice);
 				String[] streaming_details = moviechoice.split("#");
-				//System.out.println(streaming_details[1] + " " + streaming_details[2]);
+				System.out.println("Message Description:");
+				System.out.println("Starting streaming for video: " + streaming_details[1] + " and protocol " + streaming_details[2]);
 				
 			String command = null;
 			String command_client = null;
@@ -128,6 +131,7 @@ public class Server
 	            Process process = processBuilder.start();
 				out = new ObjectOutputStream(socket.getOutputStream());
 				out.writeObject(command_client);
+				System.out.println("Starting streaming...");
 	        } 
 	        catch (IOException e) 
 	        {

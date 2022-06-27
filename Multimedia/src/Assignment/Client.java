@@ -31,7 +31,8 @@ public class Client
 		try (Scanner scanner = new Scanner(System.in)) 
 		{
 			socket = new Socket(ip, port);
-
+			System.out.println("You are now connected");
+			
 			// Client receives list of available formats
 			in = new ObjectInputStream(socket.getInputStream());
 			String msgReceived = (String) in.readObject();
@@ -118,7 +119,7 @@ public class Client
 		String msgReply1 = "#" + chosen_file + "-" + chosen_resolution + "." + chosen_format + "#" + chosen_protocol; 
 		out.writeObject(msgReply1);
 		
-		// Client receives list of available videos (#name#resolution)
+		// Client receives command for process builder.
 		in = new ObjectInputStream(socket.getInputStream());
 		String command_client = (String) in.readObject();
 		
@@ -129,6 +130,7 @@ public class Client
         try
         {
             Process process = processBuilder.start();
+            System.out.println("Starting streaming...");
         } 
         catch (IOException e) 
         {
